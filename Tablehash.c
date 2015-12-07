@@ -3,7 +3,6 @@
 #include <limits.h>
 #include <string.h>
 struct information{
-	char *mot;
 	int key;
 	int occ;
 	struct information *suivant;
@@ -65,6 +64,14 @@ int affichedico(struct information dico[],int total){
         }
 }
 
+int Hash(char *mot,int tailletableau,struct information dico[]){
+
+
+
+
+
+
+}
 /***********************************************************************/
 
 
