@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+
+#define RESEARCH_FAILURE -1
+
 struct information{
 	int key;
 	int occ;
@@ -35,23 +38,19 @@ int lireMot(FILE * fp, char * mot) {
 int recherche(int key,struct information dico[], int total){
 	int i=0;
 	for(i=0; i<total ; i++){
-		if(dico[i].key==key){
+		if(dico[i].key==key)
 			return i;// si découverte du mot renvoie a la position ou l'on a trouvé le mot
-		}
 	}
-	return -1;
+	return RESEARCH_FAILURE;
 }
 
 
 int ajouter_mot(char *buff, int total, struct information dico[],int tailletableau){
 	int clef=Hash(buff,tailletableau);
 	int aide=recherche(clef,dico,total); //position du mot
-	if (aide==-1) { // si le mot n'est pas la alors place du mot = total
-		//total ++;
+	if (aide==RESEARCH_FAILURE) { // si le mot n'est pas la alors place du mot = total
 		dico[total].key=clef;
 		dico[total].mot=strdup(buff);
-		//dico[total].mot=malloc(sizeof(char));
-		//strcpy(buff,dico[total].mot);
 		dico[total].occ=1;
 		total++;
  	}
@@ -76,6 +75,23 @@ int Hash(char *mot,int tailletableau){
 	}
 	return ristouquette%tailletableau;
 }
+
+
+
+
+/*void RechercheMot(struct information dico[],int total,int tailletableau){
+	printf("tape le mot que tu recherche pd \n");
+	char *mot;
+	scanf("%s",mot);
+	int has=Hash(mot,tailletableau);
+	printf("%d \n\n",has);
+	int i=recherche(has,dico,total);
+	printf("%d\n\n",i);
+	if(i==RESEARCH_FAILURE)
+		printf("Ael pd");
+	else
+		printf("Victime boloss");
+}*/
 /***********************************************************************/
 
 
@@ -99,14 +115,17 @@ int Hash(char *mot,int tailletableau){
          while (lireMot(fp, &buffer[0])) {
 	   // printf("a");
 	   // printf ("%s",buffer);
-            n=ajouter_mot(buffer,n,dico,516);
+            n=ajouter_mot(buffer,n,dico,tailledico);
 	    printf("ristouquette : %d \n",Hash(buffer,tailledico));	
 	}
 			printf("resultat final : \n\n\n\n");
 			affichedico(dico,n);
 			printf("\n\n Il y a %d mots dans %s", n, argv[1]);
-      }
-   	
+     			//printf("\n Maintenant viens rechercher un mot : \n\n");
+			//RechercheMot(dico,n,tailledico);
+
+	 }
+   
    }
 
 
