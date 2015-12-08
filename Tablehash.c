@@ -5,6 +5,7 @@
 struct information{
 	int key;
 	int occ;
+	char *mot;
 	struct information *suivant;
 }information;
 
@@ -31,23 +32,25 @@ int lireMot(FILE * fp, char * mot) {
    }
 
 
-int recherche(char *mot,struct information dico[], int total){
+int recherche(int key,struct information dico[], int total){
 	int i=0;
 	for(i=0; i<total ; i++){
-		if(strcmp(dico[i].mot,mot)==0)
+		if(dico[i].key==key){
 			return i;// si découverte du mot renvoie a la position ou l'on a trouvé le mot
+		}
 	}
-	return -1; // retourne -1 si non decouverte du mot
+	return -1;
 }
 
-int ajouter_mot(char *buff, int total, struct information dico[]){
-	int aide=recherche(buff,dico,total); //position du mot
+
+int ajouter_mot(char *buff, int total, struct information dico[],int tailletableau){
+	int clef=Hash(buff,tailletableau);
+	int aide=recherche(clef,dico,total); //position du mot
 	if (aide==-1) { // si le mot n'est pas la alors place du mot = total
 		//total ++;
-		
+		dico[total].key=clef;
 		dico[total].mot=strdup(buff);
 		//dico[total].mot=malloc(sizeof(char));
-		
 		//strcpy(buff,dico[total].mot);
 		dico[total].occ=1;
 		total++;
@@ -60,17 +63,18 @@ int ajouter_mot(char *buff, int total, struct information dico[]){
 int affichedico(struct information dico[],int total){
 	int i=0;
 	 for(i=0; i<total ; i++){
-               printf(" dico : mot = %s occurence = %d \n",dico[i].mot,dico[i].occ);
+               printf(" dico : mot = %s occurence = %d  key= %d \n",dico[i].mot,dico[i].occ,dico[i].key);
         }
 }
 
-int Hash(char *mot,int tailletableau,struct information dico[]){
-
-
-
-
-
-
+int Hash(char *mot,int tailletableau){
+	int ristouquette=0;
+	int aide=sizeof(mot);
+	int i;
+	for(i=0;i<aide;i++){
+		ristouquette=ristouquette+mot[i];
+	}
+	return ristouquette%tailletableau;
 }
 /***********************************************************************/
 
@@ -95,12 +99,14 @@ int Hash(char *mot,int tailletableau,struct information dico[]){
          while (lireMot(fp, &buffer[0])) {
 	   // printf("a");
 	   // printf ("%s",buffer);
-            n=ajouter_mot(buffer,n,dico);	
+            n=ajouter_mot(buffer,n,dico,516);
+	    printf("ristouquette : %d \n",Hash(buffer,tailledico));	
 	}
+			printf("resultat final : \n\n\n\n");
 			affichedico(dico,n);
 			printf("\n\n Il y a %d mots dans %s", n, argv[1]);
       }
-   
+   	
    }
 
 
